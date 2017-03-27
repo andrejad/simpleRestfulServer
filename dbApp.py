@@ -62,7 +62,6 @@ def getAllByOwner(owner, lim):
     cur = con.cursor()
 
     limit = "" if lim == 0 else " limit " + str(lim)
-    #print("select rowid, * from dataT" + str(limit))
     cur.execute("select rowid, * from dataT where owner=?" + limit + " order by rowid desc", (owner,))
     d = []
     while True:
@@ -70,12 +69,12 @@ def getAllByOwner(owner, lim):
         if row == None:
             break
         d.append(row)
-    #print ("d=",d)
     #print("json.dumps(d)", json.dumps(d))
     con.close()
     return d
 
 def putNewTask(owner, priority, message):
+    print ("db put new taks")
     # TODO: validation parameters
     con = sqlite3.connect(dbName)
     cur = con.cursor()
@@ -84,19 +83,19 @@ def putNewTask(owner, priority, message):
     con.close()
     return {'status': 'ok'}
 
-def deleteTask(rowid):
-    con = sqlite3.connect(dbName)
-    cur = con.cursor()
-    cur.execute("delete from dataT where rowid=?", (rowid,))
-    con.commit()
-    con.close()
-    return {'status': 'ok'}
-
 def updateDataT(rowid, owner, priority, message):
     con = sqlite3.connect(dbName)
     cur = con.cursor()
     # TODO: validation if rowid exists
-    cur.execute("UPDATE dataT SET owner = ?, priority = ?, message = ? WHERE rowid=?", (owner, priority, message, rowid))
+    cur.execute("UPDATE dataT SET owner = ?, priority = ?, message = ? WHERE rowid=?", (owner, int(priority), message, rowid))
+    con.commit()
+    con.close()
+    return {'status': 'ok'}
+
+def deleteTask(rowid):
+    con = sqlite3.connect(dbName)
+    cur = con.cursor()
+    cur.execute("delete from dataT where rowid=?", (rowid,))
     con.commit()
     con.close()
     return {'status': 'ok'}

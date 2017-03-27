@@ -1,5 +1,5 @@
 import dbApp
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_restful import Resource, Api, reqparse
 
 # For future development, Philips HUE local IP address (example)
@@ -12,11 +12,13 @@ api = Api(app)
 # Setting up the parser for input REST json parameters.
 # Each pargument must be defined in the parser setup here.
 # http://flask-restful.readthedocs.io/en/0.3.5/reqparse.html
+# why and how to use method request.get_json(force=true): http://stackoverflow.com/questions/30491841/python-flask-restful-post-not-taking-json-arguments
+#
 parser = reqparse.RequestParser()
-parser.add_argument('message', required=True, help="Message cannot be blank!")
-parser.add_argument('owner', required=True, help="Owner must be supplied!")
-parser.add_argument('priority', type=int) #not mandatory, default 1
-parser.add_argument('taskId', type=int) #not mandatory, default 1
+parser.add_argument('message', required=True, help="Message cannot be blank!", location = 'args')
+parser.add_argument('owner', required=True, help="Owner must be supplied!", location = 'args')
+parser.add_argument('priority', type=int, required=True, location = 'args') #not mandatory, default 1
+parser.add_argument('taskId', type=int, location = 'args') #not mandatory, default 1
 
 # For browser call http://000.000.000.000:5000/ this will display the list of REST methods exposed.
 # For "new" and "update" functions there is an alternative with curl linux command and how to use it.
@@ -54,24 +56,24 @@ class GetByRowId(Resource):
 # Inserts a new record in the table. 
 class InsertNew(Resource):
     def put(self):
-        args = parser.parse_args()
-        print(args)
-        if args['priority'] == "":
-            args['priority'] = 1
-            print ("Using default priority = 1")
-        print ("InsertNew(", args['owner'], args['priority'], args['message'], ")")
-        d = dbApp.putNewTask(args['owner'], args['priority'], args['message'])
+        json_data = request.get_json(force=True)
+        print ("InsertNew(", json_data['owner'], json_data['priority'], json_data['message'], ")")
+        d = dbApp.putNewTask(json_data['owner'], json_data['priority'], json_data['message'])
         return jsonify(d)
 
 # Updates a record referenced as rowid (primary key). Other paramters are optional.
 class UpdateRec(Resource):
     def put(self):
-        args = parser.parse_args()
-        #print (args);
-        print ("UpdateRec(", str(args['taskId']), args['owner'], args['priority'], args['message'], ")")
+        json_data = request.get_json(force=True)
+        print ("UpdateRec(", json_data['taskId'], json_data['owner'], json_data['priority'], json_data['message'], ")")
         # TODO: validation
-        d = dbApp.updateDataT(args['taskId'], args['owner'], args['priority'], args['message'])
+        d = dbApp.updateDataT(json_data['taskId'], json_data['owner'], json_data['priority'], json_data['message'])
         return jsonify(d)        
+        # args = parser.parse_args()        
+        # print ("UpdateRec(", str(args['taskId']), args['owner'], args['priority'], args['message'], ")")
+        # # TODO: validation
+        # d = dbApp.updateDataT(args['taskId'], args['owner'], args['priority'], args['message'])
+        # return jsonify(d)        
 
 # Deletes a record in the table referenced as rowid.
 class DeleteRec(Resource):
@@ -93,7 +95,7 @@ api.add_resource(GetByOwner, '/owner/<string:owner>')
 api.add_resource(GetByRowId, '/get/<int:rowid>')
 
 # curl -H "Content-Type: application/json" -X PUT -d '{"owner":"bob","priority":"2","message":"testing insert new"}' http://82.168.90.36:5000/new
-newCurl = """curl -H "Content-Type: application/json" -X PUT -d '{"owner":"bob","priority":"2","message":"testing insert new"}' http://127.0.0.1:5000/new"""
+newCurl = """curl -H "Content-Type: application/json" -X PUT -d '{"owner":"bob","priority":2,"message":"testing insert new"}' http://127.0.0.1:5000/new"""
 api.add_resource(InsertNew, '/new')
 
 # curl -H "Content-Type: application/json" -X PUT -d '{"rowid":"1","owner":"bob","priority":"2","message":"testing update"}' http://82.168.90.36:5000/update
