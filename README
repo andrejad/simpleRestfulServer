@@ -4,13 +4,16 @@ Repo: https://github.com/andrejad/simpleRestfulServer.git
 -------------------
 
 Prupose: to have a simple RESTful server and one-table DB for storing 
-a predefined records structure (fields: owner, priority, message, timestamp and rowid).
-Main usage is for collecting the data from the various (arduino) sensors that can call
-put a simple RESTful request. DB is SQLite and requires no installation.
+a predefined records structure fields: "owner" (string), "priority" (int), 
+"message" (string), "timestamp" (automatically inserted) and "rowid" (automatically inserted).
+
+Main usage is for collecting the data from the various (Arduino) sensors that can 
+put a simple RESTful request, but the scope of usage is wide.
+
 Server will listen on the port 5000. 
 List of available methods (help) is at: http://<server_ip>:5000/
 
-For testing purposes, there is a html folder with simple GUI in 2 php pages. 
+For testing purposes, there is a html folder with a simple GUI in 2 php pages. 
 These are ready for deployment on Apache. 
 
 
@@ -20,4 +23,3 @@ datastore - Actual data of the SQLite database. Do not change.
 mem - bash script for looking at the memory (linux) for python live processes.
 run_temp.sh - Bash script for starting the srv1 server. It will stop on Ctrl-C.
 run_honup.sh - Bas script for starting the server in production, it will not terminate after logout.
-
