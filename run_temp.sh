@@ -3,5 +3,5 @@
 # for temporary starting of the server
 
 clear
-python3 -u srv1.py
+python3 -u restServer.py
 ./mem
