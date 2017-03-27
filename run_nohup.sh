@@ -1,5 +1,5 @@
 #!/bin/bash
 
 clear
-nohup python3 -u ./srv1.py &> srv1.log &
+nohup python3 -u ./restServer.py &> restServer.log &
 ./mem
