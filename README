@@ -17,8 +17,8 @@ For testing purposes, there is a html folder with a simple GUI in 2 php pages.
 These are ready for deployment on Apache. 
 
 
-srv1.py - Main file of the server, listens on port 5000 for REST/json calls. Start analysis from here.
-dbApp.py - Contains DB related actions (CRUD) and creation of the table. 
+restServer.py - Main file of the server, listens on port 5000 for REST/json calls. Start analysis from here.
+dbService.py - Contains DB related actions (CRUD) and creation of the table. 
 datastore - Actual data of the SQLite database. Do not change.
 mem - bash script for looking at the memory (linux) for python live processes.
 run_temp.sh - Bash script for starting the srv1 server. It will stop on Ctrl-C.
