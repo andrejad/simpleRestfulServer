@@ -1,0 +1,23 @@
+Simple RESTful server with SQLite DB and one table
+Andreja Dulovic 2017
+Repo: https://github.com/andrejad/simpleRestfulServer.git
+-------------------
+
+Prupose: to have a simple RESTful server and one-table DB for storing 
+a predefined records structure (fields: owner, priority, message, timestamp and rowid).
+Main usage is for collecting the data from the various (arduino) sensors that can call
+put a simple RESTful request. DB is SQLite and requires no installation.
+Server will listen on the port 5000. 
+List of available methods (help) is at: http://<server_ip>:5000/
+
+For testing purposes, there is a html folder with simple GUI in 2 php pages. 
+These are ready for deployment on Apache. 
+
+
+srv1.py - Main file of the server, listens on port 5000 for REST/json calls. Start analysis from here.
+dbApp.py - Contains DB related actions (CRUD) and creation of the table. 
+datastore - Actual data of the SQLite database. Do not change.
+mem - bash script for looking at the memory (linux) for python live processes.
+run_temp.sh - Bash script for starting the srv1 server. It will stop on Ctrl-C.
+run_honup.sh - Bas script for starting the server in production, it will not terminate after logout.
+
