@@ -79,11 +79,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include_once "shwj.php";
     goto skiptoend;
     
-  } elseif ($actionId == 'allapi') {
-   // call another script for nicerendering, fetcch results first
+  } elseif ($actionId == 'getByOwner') {
+    $results = file_get_contents($uri . '/owner/' . $owner);
+    $_SESSION['jresults'] = $results;;
+    include_once "shwj.php";
+    goto skiptoend;
   
   } else {
       echo "Action not supported";
+
   };
 
 };
@@ -126,6 +130,13 @@ Priority: <input type="text" name="priority"><br>
 Message: <input type="text" name="msg"><br>
 <input type="hidden" name="actionId" value="edittask">
 <button type="submit">Modify</button>
+</form>
+
+<h3>Search by owner</h3>
+<form method="post" action="<?php echo $trgphp; ?>">
+Owner: <input type="text" name="owner"><br>
+<input type="hidden" name="actionId" value="getByOwner">
+<button type="submit">Search</button>
 </form>
 
 <h3>Remove task</h3>
