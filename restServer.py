@@ -34,24 +34,24 @@ def index():
 class FetchDataT(Resource):
     def get(self):
         print ("FetchDataT()")
-        d = dbApp.getAllDataT(0)
-        dl = dbApp.rowsToListDict(d)
+        d = dbService.getAllDataT(0)
+        dl = dbService.rowsToListDict(d)
         return jsonify(dl)
 
 # Returns data from the table that has column value <owner>
 class GetByOwner(Resource):
     def get(self, owner):
         print ("GetByOwner(" + owner + ")")
-        d = dbApp.getAllByOwner(owner, 0)
-        dl = dbApp.rowsToListDict(d)
+        d = dbService.getAllByOwner(owner, 0)
+        dl = dbService.rowsToListDict(d)
         return jsonify(dl)
 
 # Returns a single record from the table, based on unique rowid.
 class GetByRowId(Resource):
     def get(self, rowid):
         print ("GetByRowId(" + str(rowid) + ")")
-        d = dbApp.getById(rowid)
-        dl = dbApp.rowsToListDict(d)
+        d = dbService.getById(rowid)
+        dl = dbService.rowsToListDict(d)
         return jsonify(dl)
 
 # Inserts a new record in the table. 
@@ -59,7 +59,7 @@ class InsertNew(Resource):
     def put(self):
         json_data = request.get_json(force=True)
         print ("InsertNew(", json_data['owner'], json_data['priority'], json_data['message'], ")")
-        d = dbApp.putNewTask(json_data['owner'], json_data['priority'], json_data['message'])
+        d = dbService.putNewTask(json_data['owner'], json_data['priority'], json_data['message'])
         return jsonify(d)
 
 # Updates a record referenced as rowid (primary key). Other paramters are optional.
@@ -68,14 +68,14 @@ class UpdateRec(Resource):
         json_data = request.get_json(force=True)
         print ("UpdateRec(", json_data['taskId'], json_data['owner'], json_data['priority'], json_data['message'], ")")
         # TODO: validation
-        d = dbApp.updateDataT(json_data['taskId'], json_data['owner'], json_data['priority'], json_data['message'])
+        d = dbService.updateDataT(json_data['taskId'], json_data['owner'], json_data['priority'], json_data['message'])
         return jsonify(d)                
 
 # Deletes a record in the table referenced as rowid.
 class DeleteRec(Resource):
     def get(self, rowid):
         print ("DeleteRec(" + rowid + ")")
-        d = dbApp.deleteTask(rowid)        
+        d = dbService.deleteTask(rowid)        
         return jsonify(d)
 
 # Assigning methods to the URL endpoints.
