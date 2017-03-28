@@ -1,9 +1,10 @@
+# Main script of the RESTful web services server. Exposes several CRUD methods over the dable dataT
+# (described in dbService.py). See *.sh scripts for running in hohup mode.
+# Dependencies: flask, flask_restful
+
 import dbService
 from flask import Flask, jsonify, request
 from flask_restful import Resource, Api, reqparse
-
-# For future development, Philips HUE local IP address (example)
-hueip = "192.168.2.2"
 
 # Starting the server, Flask library, port 5000
 app = Flask(__name__)
@@ -77,29 +78,27 @@ class DeleteRec(Resource):
         d = dbApp.deleteTask(rowid)        
         return jsonify(d)
 
-
-# Assigning the methods to the URL endpoints.
-
+# Assigning methods to the URL endpoints.
+#
 # return all rows (max 100)
 api.add_resource(FetchDataT, '/alldata')
-
+#
 # return one record
 api.add_resource(GetByOwner, '/owner/<string:owner>')
-
+#
 # return one record
 api.add_resource(GetByRowId, '/get/<int:rowid>')
-
+#
 # curl -H "Content-Type: application/json" -X PUT -d '{"owner":"bob","priority":"2","message":"testing insert new"}' http://82.168.90.36:5000/new
 newCurl = """curl -H "Content-Type: application/json" -X PUT -d '{"owner":"bob","priority":2,"message":"testing insert new"}' http://127.0.0.1:5000/new"""
 api.add_resource(InsertNew, '/new')
-
+#
 # curl -H "Content-Type: application/json" -X PUT -d '{"rowid":"1","owner":"bob","priority":"2","message":"testing update"}' http://82.168.90.36:5000/update
 updateCurl = """curl -H "Content-Type: application/json" -X PUT -d '{"taskId":"1","owner":"bob","priority":"2","message":"testing update"}' http://127.0.0.1:5000/update"""
 api.add_resource(UpdateRec, '/update')
-
+#
 # delete a record
 api.add_resource(DeleteRec, '/del/<string:rowid>')
-
 
 # Running the server
 if __name__ == '__main__':
