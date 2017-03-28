@@ -1,51 +1,53 @@
+# This script:
+# 1) Creates the DB "datastore" and a table "dataT" (with default dataset) upon startup, if they don't exist. 
+# 2) Provides a set of insert/edit/read/delete methods for dataT table.
+
 import sqlite3
 import json
 
 dbName = "datastore"
 
-# DEFAULT (datetime('now','localtime'))
-# rowid(int)
-# timestamp(text)
-# owner(text)
-# priority(int)
-# message(text)
-createDataT = "CREATE TABLE IF NOT EXISTS dataT (timestamp text DEFAULT CURRENT_TIMESTAMP, owner text, priority int, message text)"
-
-# dafault data to be loaded if table doesn't exist.
-defData = [["ana", 1, "note no.1"], ["bob", 1, "note #2"], ["carl", 2, "note #3"], ["dave", 1, "note #4"]]
-
-# creation of database (if doesn't exist), table, and inserting initial data.
+# Creates the database dnBame (if doesn't exist), table dataT, and inserting initial data.
 def initTableDataT():
+
+    # tabe "dataT" has the follwing columns:
+    # rowid(int) - Primary key. Automatically inserted. Not editable or insertable by user.     
+    # timestamp(text) DEFAULT (datetime('now','localtime')) - Automatically inserted. Not editable or insertable by user.
+    # owner(text) - Can be used to identify the sender of a record. Various sensors can have their unique Owner id's.
+    # priority(int) - Can be used to classify the type of message (temperature, speed, etc) or to determine the priority.
+    # message(text) - The data itself
+    #
+    createDataT = "CREATE TABLE IF NOT EXISTS dataT (timestamp text DEFAULT CURRENT_TIMESTAMP, owner text, priority int, message text)"
+
+    # Dafault data to be loaded if the table dataT doesn't exist. Small dataset for testing.
+    #
+    defData = [["ana", 1, "note no.1"], ["bob", 1, "note #2"], ["carl", 2, "note #3"], ["dave", 1, "note #4"]]
     
-    print("initTableDataT()")
-    # if not exist, create table
+    # If dataT doens't exist it will be created and small dataset will be iserted.
+    #
     con = sqlite3.connect(dbName)
     cur = con.cursor()
-    cur.execute(createDataT)
+    cur.execute(createDataT) # Create table dataT if it doesn't exist.
     con.commit()
-    # if has no rows, insert new data
-    res = cur.execute("select count(*) from dataT").fetchone()
-    if res[0] == 0:
+    res = cur.execute("select count(*) from dataT").fetchone() # Is the table empty?
+    if res[0] == 0: # If the table is empty, insert small dataset.
         for defRow in defData:
             cur.execute("insert into dataT (owner, priority, message) values (?,?,?)", defRow)
     con.commit()
-    res = cur.execute("select count(*) from dataT").fetchone()
+    # Check how many rows are in the table
+    res = cur.execute("select count(*) from dataT").fetchone() 
     con.close()
     print ("Number of rows in dataT table:", res[0])
 
-# fetching all data from the table (limited amount of rows)
+# Fetching all rows from the table (limited amount of rows as parameter, absolute limit=100)
 def getAllDataT(lim):
     
-    print("getAllDataT("+str(lim)+")")
     if lim > 100:
         print("getAllDataT absolute limit 100 rows")
         lim = 100
-
     con = sqlite3.connect(dbName)
     cur = con.cursor()
-
     limit = "" if lim == 0 else " limit " + str(lim)
-    #print("select rowid, * from dataT" + str(limit))
     cur.execute("select rowid, * from dataT order by rowid desc " + limit)
     d = []
     while True:
@@ -53,12 +55,11 @@ def getAllDataT(lim):
         if row == None:
             break
         d.append(row)
-    #print ("d=",d)
-    #print("json.dumps(d)", json.dumps(d))
+    # print("json.dumps(getAllDataT)", json.dumps(d)) # For debugging/logging purposes.
     con.close()
     return d
 
-# fetching all records from the table, by owner
+# Fetching all records from the table by owner. Amount of rows as lim(it) parameter (absolute max limit=100).
 def getAllByOwner(owner, lim):
     
     if lim > 100:
@@ -76,11 +77,11 @@ def getAllByOwner(owner, lim):
         if row == None:
             break
         d.append(row)
-    #print("json.dumps(d)", json.dumps(d))
     con.close()
+    # print("json.dumps(getAllByOwner)", json.dumps(d)) # For debugging/logging purposes.
     return d
 
-# inserting new record
+# Inserting new record. Timestamp and rowid (PK) are insterted automatically.
 def putNewTask(owner, priority, message):
     
     print ("db put new taks")
@@ -92,38 +93,40 @@ def putNewTask(owner, priority, message):
     con.close()
     return {'status': 'ok'}
 
-# updateing a record, identified by rowid (primary key)
+# Updating a record, identified by rowid (primary key).
 def updateDataT(rowid, owner, priority, message):
+    
     con = sqlite3.connect(dbName)
     cur = con.cursor()
-    # TODO: validation if rowid exists
+    # TODO: Validation if rowid exists, and return a propriate errorcode.
     cur.execute("UPDATE dataT SET owner = ?, priority = ?, message = ? WHERE rowid=?", (owner, int(priority), message, rowid))
     con.commit()
     con.close()
     return {'status': 'ok'}
 
-# deleting a record, identified by rowid (primary key)
+# Deleting a record, identified by rowid (primary key)
 def deleteTask(rowid):
     
     con = sqlite3.connect(dbName)
     cur = con.cursor()
+    # TODO: Validation if rowid exists, and return a propriate errorcode.
     cur.execute("delete from dataT where rowid=?", (rowid,))
     con.commit()
     con.close()
     return {'status': 'ok'}
 
-# fetching a record based on rowid (PK)
+# Fetching a record based on a rowid (PK).
 def getById(rowid):
     
     con = sqlite3.connect(dbName)
     cur = con.cursor()
+    # TODO: Validation if rowid exists, and return a propriate errorcode.
     cur.execute("select rowid, * from dataT where rowid=?", (rowid,))
-    d = [cur.fetchone()]
-    # TODO: validation if none
+    d = [cur.fetchone()]    
     con.close()
     return d
 
-# internal method for transforming db data to a list (dictionary)
+# Internal method for transforming the data into a list (dictionary).
 def rowsToListDict(rows):
     
     retList = []
@@ -136,11 +139,14 @@ def rowsToListDict(rows):
             'message': row[4]
         }
         retList.append(dict)
-    #print("retList", retList)
+    # print("retList", retList) # For debugging/logging purposes.
     return retList
 
-# create table if not already created
+# Following calls will be executed on startup in order to create DB and table if they don't exist,
+# and to display the count of data in the dataT table.
+#
+# Create table if not already created
 initTableDataT()
-
-# read from table, for testing purposes.
-getAllDataT(3)
+#
+# Read from table, for testing purposes.
+getAllDataT(100)
