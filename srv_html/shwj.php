@@ -1,13 +1,11 @@
 <?php
+
 session_start();
-$result = $_SESSION['jresults'];
-#echo "</br>from session:". $result;
-$result = json_decode($result);
-session_destroy();
+$result = json_decode($_SESSION['jresults']);
+
 ?>
 
 <a href="<?php echo $_SERVER['REQUEST_URI']; ?>">return</a>
-
 
 <h2>Results:</h2>
     <?php for ($i=0; $i < count($result); $i++) { ?>
@@ -21,5 +19,5 @@ session_destroy();
 	    </br>
     <?php 
 	}
-    ?>
+?>
     

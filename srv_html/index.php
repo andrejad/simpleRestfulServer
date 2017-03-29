@@ -1,6 +1,12 @@
 <?php 
+
 session_start();
-$uri = 'http://127.0.0.1:5000';
+
+if (!isset($restSrvUrl)) { 
+  $publicIp = trim(shell_exec("curl -s http://whatismyip.akamai.com/"));  
+  $restSrvUrl = 'http://' . $publicIp . ':5000';  
+}
+
 $trgphp = htmlspecialchars($_SERVER['PHP_SELF']);
 
 function test_input($data) {
@@ -59,28 +65,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if ($actionId == 'newtask') {    
     echo "</br>clicked on newtask";
     unset($datamap[taskId]);
-    $url = $uri . '/new';
+    $url = $restSrvUrl . '/new';
     CallAPI($url, $json);
 
   } elseif ($actionId == 'edittask') {
-    $url = $uri . '/update';
+    $url = $restSrvUrl . '/update';
     CallAPI($url, $json);
 
   } elseif ($actionId == 'deltask') {
-    $results = file_get_contents($uri . "/del/" . $taskid);
+    $results = file_get_contents($restSrvUrl . "/del/" . $taskid);
     echo $results;
 
   } elseif ($actionId == 'changeUrl') {
-    $uri = $newUri;
+    $restSrvUrl = $newUri;
 
   } elseif ($actionId == 'alldata') {
-    $results = file_get_contents($uri . "/alldata");
+    $results = file_get_contents($restSrvUrl . "/alldata");
     $_SESSION['jresults'] = $results;;
     include_once "shwj.php";
     goto skiptoend;
     
   } elseif ($actionId == 'getByOwner') {
-    $results = file_get_contents($uri . '/owner/' . $owner);
+    $results = file_get_contents($restSrvUrl . '/owner/' . $owner);
     $_SESSION['jresults'] = $results;;
     include_once "shwj.php";
     goto skiptoend;
@@ -98,14 +104,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
 <form method="post" action="<?=$trgphp;?>">
-<button type="submit">Change REST</button><input type="text" name="resturl" value="<?php echo $uri; ?>" >
+<button type="submit">Change REST</button><input type="text" name="resturl" value="<?php echo $restSrvUrl; ?>" >
 <input type="hidden" name="actionId" value="changeUrl">
 </form>
 
 <form method="post" action="index.php">
 <button type="submit">Display all data</button>
 <input type="hidden" name="actionId" value="alldata">
-<button TYPE="button" onClick="parent.location='<?php echo $uri ?>/'">All API</button>
+<button TYPE="button" onClick="parent.location='<?php echo $restSrvUrl ?>/'">All API</button>
 </form>
 
 
