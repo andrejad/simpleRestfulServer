@@ -1,3 +1,11 @@
+<script type="text/javascript">
+  setInterval("my_function();",5000); 
+ 
+    function my_function(){
+        window.location = location.href;
+    }
+</script>
+
 <?php
 
 session_start();
@@ -5,7 +13,8 @@ $result = json_decode($_SESSION['jresults']);
 
 ?>
 
-<a href="<?php echo $_SERVER['REQUEST_URI']; ?>">return</a>
+<!--<a href="<?php echo $_SERVER['REQUEST_URI']; ?>">return</a>-->
+<a href="<?php echo  $_SESSION['baseIp'].'/index.php'; ?>">return</a>
 
 <h2>Results:</h2>
     <?php for ($i=0; $i < count($result); $i++) { ?>

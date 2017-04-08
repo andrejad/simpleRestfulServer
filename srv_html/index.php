@@ -5,6 +5,7 @@ session_start();
 if (!isset($restSrvUrl)) { 
   $publicIp = trim(shell_exec("curl -s http://whatismyip.akamai.com/"));  
   $restSrvUrl = 'http://' . $publicIp . ':5000';  
+  $_SESSION['baseIp'] = $'http://' . $publicIp;
 }
 
 $trgphp = htmlspecialchars($_SERVER['PHP_SELF']);
@@ -82,12 +83,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   } elseif ($actionId == 'alldata') {
     $results = file_get_contents($restSrvUrl . "/alldata");
     $_SESSION['jresults'] = $results;;
-    include_once "shwj.php";
-    goto skiptoend;
+    header("Location: shwj.php");
+    exit;
+    // include_once "shwj.php";
+    // goto skiptoend;
     
   } elseif ($actionId == 'getByOwner') {
     $results = file_get_contents($restSrvUrl . '/owner/' . $owner);
-    $_SESSION['jresults'] = $results;;
+    $_SESSION['jresults'] = $results;
     include_once "shwj.php";
     goto skiptoend;
   
