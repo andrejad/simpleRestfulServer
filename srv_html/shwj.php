@@ -9,7 +9,8 @@
 <?php
 
 session_start();
-$result = json_decode($_SESSION['jresults']);
+#$result = json_decode($_SESSION['jresults']);
+$result = json_decode(file_get_contents($_SESSION['restSrvUrl'] . "/alldata"));
 
 ?>
 

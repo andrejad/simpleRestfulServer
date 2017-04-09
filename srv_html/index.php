@@ -5,7 +5,7 @@ session_start();
 if (!isset($restSrvUrl)) { 
   $publicIp = trim(shell_exec("curl -s http://whatismyip.akamai.com/"));  
   $restSrvUrl = 'http://' . $publicIp . ':5000';  
-  $_SESSION['baseIp'] = $'http://' . $publicIp;
+  $_SESSION['restSrvUrl'] = $restSrvUrl;
 }
 
 $trgphp = htmlspecialchars($_SERVER['PHP_SELF']);
