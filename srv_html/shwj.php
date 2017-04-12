@@ -17,7 +17,7 @@ $result = json_decode(file_get_contents($_SESSION['restSrvUrl'] . "/alldata"));
 <!--<a href="<?php echo $_SERVER['REQUEST_URI']; ?>">return</a>-->
 <a href="<?php echo  $_SESSION['baseIp'].'/index.php'; ?>">return</a>
 
-<h2>Results:</h2>
+<h2>Results (<?php echo date("Y/m/d H:i:s"); ?>):</h2>
     <?php for ($i=0; $i < count($result); $i++) { ?>
     	<table border=1>
     	<tr bgcolor="#DDDDDD"><td>ID</td><td><?=$result[$i]->rowId;?></td></tr>
