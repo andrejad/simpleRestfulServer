@@ -13,7 +13,7 @@ put a simple RESTful request, but the scope of usage is wide.
 Server will listen on the port 5000. 
 List of available methods (help) is at: http://<server_ip>:5000/
 
-For testing purposes, there is a html folder with a simple GUI in 2 php pages. 
+For testing purposes, there is an html folder with a simple GUI in 2 php pages. 
 These are ready for deployment on Apache. 
 
 
