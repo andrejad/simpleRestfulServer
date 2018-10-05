@@ -3,19 +3,22 @@ Andreja Dulovic 2017
 Repo: https://github.com/andrejad/simpleRestfulServer.git
 -------------------
 
-Prupose: to have a simple RESTful server and one-table DB for storing 
-a predefined records structure fields: "owner" (string), "priority" (int), 
+Prupose: to have a simple RESTful server and one-table DB for storing a predefined records structure fields: "owner" (string), "priority" (int), 
 "message" (string), "timestamp" (automatically inserted) and "rowid" (automatically inserted).
 
-Main usage is for collecting the data from the various (Arduino) sensors that can 
-put a simple RESTful request, but the scope of usage is wide.
+Main usage is for collecting the data from the various (Arduino) sensors that can put a simple RESTful request, but the scope of usage is wide.
+An example of insert message: 
+{
+ "owner":"bob",
+ "priority":2,
+ "message":"testing insert new"
+}
 
 Server will listen on the port 5000. 
 List of available methods (help) is at: http://<server_ip>:5000/
 
 For testing purposes, there is an html folder with a simple GUI in 2 php pages. 
 These are ready for deployment on Apache. 
-
 
 restServer.py - Main file of the server, listens on port 5000 for REST/json calls. Start analysis from here.
 dbService.py - Contains DB related actions (CRUD) and creation of the table. 
